@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PromptData, PromptOption } from '../types';
 import { MultiSelect } from './MultiSelect';
-import { refinePromptWithAI } from '../services/geminiService';
 import { estimateTokens, calculateFlashCost, formatCost } from '../utils';
-import { Plus, Trash2, Wand2, Loader2, Save, X, Coins } from 'lucide-react';
+import { Plus, Trash2, Save, X, Coins } from 'lucide-react';
 
 interface PromptFormProps {
   initialData?: PromptData;
@@ -15,11 +14,11 @@ interface PromptFormProps {
   onManageClients: () => void;
 }
 
-export const PromptForm: React.FC<PromptFormProps> = ({ 
-  initialData, 
-  availableDashboardBlocks, 
+export const PromptForm: React.FC<PromptFormProps> = ({
+  initialData,
+  availableDashboardBlocks,
   availableClients,
-  onSave, 
+  onSave,
   onCancel,
   onManageBlocks,
   onManageClients
@@ -31,10 +30,8 @@ export const PromptForm: React.FC<PromptFormProps> = ({
   const [dashboardBlocks, setDashboardBlocks] = useState<string[]>(initialData?.dashboardBlocks || []);
   const [clients, setClients] = useState<string[]>(initialData?.clients || []);
   const [options, setOptions] = useState<PromptOption[]>(initialData?.options || []);
-  
-  // AI State
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [aiInstruction, setAiInstruction] = useState('Improve clarity and structure');
+
+
 
   // Validation
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -105,18 +102,7 @@ export const PromptForm: React.FC<PromptFormProps> = ({
     setOptions(options.filter(opt => opt.id !== id));
   };
 
-  const handleAiRefine = async () => {
-    if (!content) return;
-    setIsGenerating(true);
-    try {
-      const refined = await refinePromptWithAI(content, aiInstruction);
-      setContent(refined);
-    } catch (e) {
-      alert("Failed to generate with Gemini. check API Key.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 animate-fade-in relative">
@@ -124,19 +110,9 @@ export const PromptForm: React.FC<PromptFormProps> = ({
         <h2 className="text-xl font-semibold text-slate-800">
           {initialData ? 'Edit Prompt' : 'Create New Prompt'}
         </h2>
-        
+
         {/* Token Counter Widget */}
-        <div className="flex items-center gap-4 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-           <div className="flex items-center gap-1.5" title="Estimated Tokens">
-             <Coins className="w-4 h-4 text-amber-500" />
-             <span className="text-sm font-semibold text-slate-700">{tokenCount.toLocaleString()}</span>
-             <span className="text-xs text-slate-400">tok</span>
-           </div>
-           <div className="w-px h-4 bg-slate-300"></div>
-           <div className="flex items-center gap-1.5" title="Estimated Input Cost (Gemini Flash)">
-             <span className="text-sm font-mono font-medium text-green-600">{formatCost(cost)}</span>
-           </div>
-        </div>
+
 
         <button onClick={onCancel} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
           <X className="w-6 h-6" />
@@ -173,22 +149,22 @@ export const PromptForm: React.FC<PromptFormProps> = ({
 
         {/* Dashboard & Clients */}
         <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-            <MultiSelect 
-              label="Dashboard Blocks" 
-              options={availableDashboardBlocks} 
-              selected={dashboardBlocks} 
-              onChange={setDashboardBlocks}
-              onManage={onManageBlocks}
+          <MultiSelect
+            label="Dashboard Blocks"
+            options={availableDashboardBlocks}
+            selected={dashboardBlocks}
+            onChange={setDashboardBlocks}
+            onManage={onManageBlocks}
+          />
+          <div className="mt-4">
+            <MultiSelect
+              label="Client Platforms"
+              options={availableClients}
+              selected={clients}
+              onChange={setClients}
+              onManage={onManageClients}
             />
-            <div className="mt-4">
-              <MultiSelect 
-                label="Client Platforms" 
-                options={availableClients} 
-                selected={clients} 
-                onChange={setClients}
-                onManage={onManageClients}
-              />
-            </div>
+          </div>
         </div>
 
         {/* Content Area with AI */}
@@ -203,27 +179,23 @@ export const PromptForm: React.FC<PromptFormProps> = ({
               placeholder="Enter your system prompt here..."
             />
           </div>
-          
-          {/* AI Toolbar */}
-          <div className="flex items-center gap-2 mt-2 bg-indigo-50 p-2 rounded-md border border-indigo-100">
-            <Wand2 className="w-4 h-4 text-indigo-600" />
-            <span className="text-xs font-semibold text-indigo-700">Gemini 3 Pro:</span>
-            <input 
-              type="text" 
-              value={aiInstruction}
-              onChange={(e) => setAiInstruction(e.target.value)}
-              className="flex-1 text-xs border-0 bg-transparent border-b border-indigo-200 focus:ring-0 placeholder-indigo-300"
-              placeholder="Instruction for AI (e.g., 'Make it more concise', 'Add error handling')..."
-            />
-            <button
-              type="button"
-              onClick={handleAiRefine}
-              disabled={isGenerating || !content}
-              className="px-3 py-1 bg-indigo-600 text-white text-xs rounded shadow-sm hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1 transition-all"
-            >
-              {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-              {isGenerating ? 'Refining...' : 'Refine'}
-            </button>
+
+          {/* Token & Cost Calculator */}
+          <div className="flex flex-wrap items-center gap-4 mt-2 bg-slate-50 p-3 rounded-md border border-slate-200 text-sm">
+            <div className="flex items-center gap-2">
+              <Coins className="w-4 h-4 text-amber-500" />
+              <span className="font-medium text-slate-700">Tokens: {tokenCount.toLocaleString()}</span>
+            </div>
+            <div className="w-px h-4 bg-slate-300 hidden sm:block"></div>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500">Cost/Run:</span>
+              <span className="font-mono font-medium text-green-600">{formatCost(cost)}</span>
+            </div>
+            <div className="w-px h-4 bg-slate-300 hidden sm:block"></div>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500">1k Runs:</span>
+              <span className="font-mono font-medium text-green-600">{formatCost(cost * 1000)}</span>
+            </div>
           </div>
           {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content}</p>}
         </div>
@@ -265,8 +237,8 @@ export const PromptForm: React.FC<PromptFormProps> = ({
                   onChange={(e) => updateOption(opt.id, 'value', e.target.value)}
                   className="flex-1 px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500"
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => removeOption(opt.id)}
                   className="p-1.5 text-red-500 hover:bg-red-50 rounded"
                 >
