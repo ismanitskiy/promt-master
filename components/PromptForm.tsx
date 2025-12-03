@@ -110,9 +110,9 @@ export const PromptForm: React.FC<PromptFormProps> = ({
 
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 animate-fade-in relative">
-      <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-        <h2 className="text-xl font-semibold text-slate-800">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 animate-fade-in relative transition-colors">
+      <div className="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+        <h2 className="text-xl font-semibold text-slate-800 dark:text-white">
           {initialData ? 'Edit Prompt' : 'Create New Prompt'}
         </h2>
 
@@ -128,32 +128,32 @@ export const PromptForm: React.FC<PromptFormProps> = ({
         {/* Names */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name (Ukrainian)</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name (Ukrainian)</label>
             <input
               type="text"
               value={nameUA}
               onChange={(e) => setNameUA(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900 dark:text-white placeholder-slate-400"
               placeholder="Назва промпту"
             />
             {errors.nameUA && <p className="text-red-500 text-xs mt-1">{errors.nameUA}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name (English ID)</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name (English ID)</label>
             <input
               type="text"
               value={nameEN}
               onChange={(e) => validateNameEn(e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${errors.nameEN ? 'border-red-300 bg-red-50' : 'border-slate-300'}`}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 ${errors.nameEN ? 'border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800' : 'border-slate-300 dark:border-slate-600'}`}
               placeholder="my_prompt_name"
             />
-            <p className="text-xs text-slate-500 mt-1">Format: snake_case only</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Format: snake_case only</p>
             {errors.nameEN && <p className="text-red-500 text-xs mt-1">{errors.nameEN}</p>}
           </div>
         </div>
 
         {/* Dashboard & Clients */}
-        <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+        <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
           <MultiSelect
             label="Dashboard Blocks"
             options={availableDashboardBlocks}
@@ -174,32 +174,32 @@ export const PromptForm: React.FC<PromptFormProps> = ({
 
         {/* Content Area with AI */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Prompt Content</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Prompt Content</label>
           <div className="relative">
             <textarea
               rows={8}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm leading-relaxed"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm leading-relaxed text-slate-900 dark:text-slate-100 placeholder-slate-400"
               placeholder="Enter your system prompt here..."
             />
           </div>
 
           {/* Token & Cost Calculator */}
-          <div className="flex flex-wrap items-center gap-4 mt-2 bg-slate-50 p-3 rounded-md border border-slate-200 text-sm">
+          <div className="flex flex-wrap items-center gap-4 mt-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm">
             <div className="flex items-center gap-2">
               <Coins className="w-4 h-4 text-amber-500" />
-              <span className="font-medium text-slate-700">Tokens: {tokenCount.toLocaleString()}</span>
+              <span className="font-medium text-slate-700 dark:text-slate-300">Tokens: {tokenCount.toLocaleString()}</span>
             </div>
-            <div className="w-px h-4 bg-slate-300 hidden sm:block"></div>
+            <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-500">Cost/Run:</span>
-              <span className="font-mono font-medium text-green-600">{formatCost(cost)}</span>
+              <span className="text-slate-500 dark:text-slate-400">Cost/Run:</span>
+              <span className="font-mono font-medium text-green-600 dark:text-green-400">{formatCost(cost)}</span>
             </div>
-            <div className="w-px h-4 bg-slate-300 hidden sm:block"></div>
+            <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-500">1k Runs:</span>
-              <span className="font-mono font-medium text-green-600">{formatCost(cost * 1000)}</span>
+              <span className="text-slate-500 dark:text-slate-400">1k Runs:</span>
+              <span className="font-mono font-medium text-green-600 dark:text-green-400">{formatCost(cost * 1000)}</span>
             </div>
           </div>
           {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content}</p>}
@@ -207,12 +207,12 @@ export const PromptForm: React.FC<PromptFormProps> = ({
 
         {/* Hint */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Usage Hint</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Usage Hint</label>
           <input
             type="text"
             value={hint}
             onChange={(e) => setHint(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-lg focus:ring-2 focus:ring-indigo-500 text-slate-900 dark:text-white placeholder-slate-400"
             placeholder="Brief description of what this prompt does..."
           />
         </div>
@@ -220,8 +220,8 @@ export const PromptForm: React.FC<PromptFormProps> = ({
         {/* Options */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-slate-700">Prompt Options / Mini-prompts</label>
-            <button type="button" onClick={addOption} className="text-indigo-600 text-sm font-medium hover:text-indigo-800 flex items-center gap-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Prompt Options / Mini-prompts</label>
+            <button type="button" onClick={addOption} className="text-indigo-600 dark:text-indigo-400 text-sm font-medium hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center gap-1">
               <Plus className="w-4 h-4" /> Add Option
             </button>
           </div>
@@ -233,14 +233,14 @@ export const PromptForm: React.FC<PromptFormProps> = ({
                   placeholder="Label (e.g. Tone: Formal)"
                   value={opt.label}
                   onChange={(e) => updateOption(opt.id, 'label', e.target.value)}
-                  className="w-1/3 px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500"
+                  className="w-1/3 px-2 py-1.5 text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded focus:ring-1 focus:ring-indigo-500 text-slate-900 dark:text-white placeholder-slate-400"
                 />
                 <input
                   type="text"
                   placeholder="Mini-prompt value (e.g. Use a formal tone.)"
                   value={opt.value}
                   onChange={(e) => updateOption(opt.id, 'value', e.target.value)}
-                  className="flex-1 px-2 py-1.5 text-sm border border-slate-300 rounded focus:ring-1 focus:ring-indigo-500"
+                  className="flex-1 px-2 py-1.5 text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded focus:ring-1 focus:ring-indigo-500 text-slate-900 dark:text-white placeholder-slate-400"
                 />
                 <button
                   type="button"
@@ -258,11 +258,11 @@ export const PromptForm: React.FC<PromptFormProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+        <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-700">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 font-medium"
+            className="px-4 py-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 font-medium"
           >
             Cancel
           </button>

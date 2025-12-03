@@ -21,12 +21,12 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2">
-        <label className="block text-sm font-medium text-slate-700">{label}</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">{label}</label>
         {onManage && (
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onManage}
-            className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+            className="text-xs text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium"
           >
             Edit List
           </button>
@@ -42,9 +42,9 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({ label, options, select
               onClick={() => toggleOption(option)}
               className={`
                 inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors border
-                ${isSelected 
-                  ? 'bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200' 
-                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}
+                ${isSelected
+                  ? 'bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-700 dark:hover:bg-indigo-900/70'
+                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700'}
               `}
             >
               {isSelected && <Check className="w-3.5 h-3.5 mr-1.5" />}

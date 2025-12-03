@@ -4,7 +4,7 @@ import { PromptData, DEFAULT_DASHBOARD_BLOCKS, DEFAULT_CLIENT_PLATFORMS } from '
 import { PromptList } from './components/PromptList';
 import { PromptForm } from './components/PromptForm';
 import { ListManagerModal } from './components/ListManagerModal';
-import { Layers, Plus, Database, Github } from 'lucide-react';
+import { Layers, Plus, Database, Github, Moon, Sun } from 'lucide-react';
 
 const STORAGE_KEY = 'prompt_master_data';
 const STORAGE_BLOCKS_KEY = 'prompt_master_blocks';
@@ -47,6 +47,23 @@ export default function App() {
   const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
   const [editingPrompt, setEditingPrompt] = useState<PromptData | undefined>(undefined);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
 
   // Modal State
   const [managerModal, setManagerModal] = useState<{
@@ -128,9 +145,9 @@ export default function App() {
   if (!isLoaded) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
       {/* Navbar */}
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <nav className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center gap-3">
@@ -138,20 +155,28 @@ export default function App() {
                 <Database className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 leading-tight">PromptMaster</h1>
-                <p className="text-xs text-slate-500 font-medium">Gemini 3 Pro Powered</p>
+                <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">PromptMaster</h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Gemini 3 Pro Powered</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               {view === 'list' && (
                 <button
                   onClick={handleCreate}
-                  className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-medium text-sm text-white hover:bg-indigo-700 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex items-center px-3 py-2 sm:px-4 bg-indigo-600 border border-transparent rounded-lg font-medium text-sm text-white hover:bg-indigo-700 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Prompt
+                  <Plus className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">New Prompt</span>
+                  <span className="sm:hidden">New</span>
                 </button>
               )}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors"
+                title="Toggle Dark Mode"
+              >
+                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
@@ -167,8 +192,8 @@ export default function App() {
           </button>
           {view !== 'list' && (
             <>
-              <span className="mx-2">/</span>
-              <span className="font-semibold text-slate-800">{view === 'create' ? 'Create' : 'Edit'}</span>
+              <span className="mx-2 text-slate-300 dark:text-slate-600">/</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">{view === 'create' ? 'Create' : 'Edit'}</span>
             </>
           )}
         </div>
