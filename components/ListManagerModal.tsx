@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Save, Trash2 } from 'lucide-react';
+import { X, Plus, Save, Trash2, Edit2, Check } from 'lucide-react';
 
 interface ListManagerModalProps {
   isOpen: boolean;
@@ -18,6 +18,8 @@ export const ListManagerModal: React.FC<ListManagerModalProps> = ({
 }) => {
   const [currentItems, setCurrentItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState('');
+  const [editingItem, setEditingItem] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -36,6 +38,28 @@ export const ListManagerModal: React.FC<ListManagerModalProps> = ({
 
   const handleRemove = (itemToRemove: string) => {
     setCurrentItems(currentItems.filter((item) => item !== itemToRemove));
+  };
+
+  const startEditing = (item: string) => {
+    setEditingItem(item);
+    setEditValue(item);
+  };
+
+  const saveEdit = () => {
+    if (editValue.trim() && editValue !== editingItem) {
+      if (currentItems.includes(editValue.trim())) {
+        alert('Item already exists!');
+        return;
+      }
+      setCurrentItems(currentItems.map(i => i === editingItem ? editValue.trim() : i));
+    }
+    setEditingItem(null);
+    setEditValue('');
+  };
+
+  const cancelEdit = () => {
+    setEditingItem(null);
+    setEditValue('');
   };
 
   const handleSave = () => {
@@ -78,13 +102,45 @@ export const ListManagerModal: React.FC<ListManagerModalProps> = ({
             ) : (
               currentItems.map((item) => (
                 <div key={item} className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-900/50 rounded border border-slate-100 dark:border-slate-700 group">
-                  <span className="text-sm text-slate-700 dark:text-slate-300">{item}</span>
-                  <button
-                    onClick={() => handleRemove(item)}
-                    className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {editingItem === item ? (
+                    <div className="flex items-center gap-2 flex-1 mr-2">
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        className="flex-1 px-2 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded focus:ring-1 focus:ring-indigo-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveEdit();
+                          if (e.key === 'Escape') cancelEdit();
+                        }}
+                      />
+                      <button onClick={saveEdit} className="text-green-600 hover:text-green-700">
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button onClick={cancelEdit} className="text-slate-400 hover:text-slate-600">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-sm text-slate-700 dark:text-slate-300">{item}</span>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => startEditing(item)}
+                          className="p-1 text-slate-400 hover:text-indigo-600"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleRemove(item)}
+                          className="p-1 text-slate-400 hover:text-red-500"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))
             )}

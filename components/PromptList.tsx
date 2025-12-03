@@ -13,6 +13,7 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isMassCopied, setIsMassCopied] = useState(false);
 
   // Filter Logic
   const filteredPrompts = useMemo(() => {
@@ -24,7 +25,8 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
       p.content.toLowerCase().includes(lower) ||
       p.hint.toLowerCase().includes(lower) ||
       p.dashboardBlocks.some(b => b.toLowerCase().includes(lower)) ||
-      p.clients.some(c => c.toLowerCase().includes(lower))
+      p.clients.some(c => c.toLowerCase().includes(lower)) ||
+      p.options.some(o => o.label.toLowerCase().includes(lower) || o.value.toLowerCase().includes(lower))
     );
   }, [prompts, searchTerm]);
 
@@ -54,8 +56,11 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
     const selectedPrompts = prompts.filter(p => selectedIds.has(p.id));
     const textToCopy = selectedPrompts.map(p => `### ${p.nameEN}\n${p.content}`).join('\n\n');
     navigator.clipboard.writeText(textToCopy);
-    alert(`Copied ${selectedPrompts.length} prompts to clipboard.`);
-    setSelectedIds(new Set());
+    setIsMassCopied(true);
+    setTimeout(() => {
+      setIsMassCopied(false);
+      setSelectedIds(new Set());
+    }, 2000);
   };
 
   const isAllSelected = filteredPrompts.length > 0 && selectedIds.size === filteredPrompts.length;
@@ -106,10 +111,10 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
 
             <button
               onClick={handleMassCopy}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm transition-all text-sm font-medium whitespace-nowrap"
+              className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg shadow-sm transition-all text-sm font-medium whitespace-nowrap ${isMassCopied ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
             >
-              <Copy className="w-4 h-4" />
-              Copy All
+              {isMassCopied ? <CheckSquare className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {isMassCopied ? 'Copied!' : 'Copy All'}
             </button>
           </div>
         )}

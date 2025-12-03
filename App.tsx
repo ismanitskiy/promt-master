@@ -150,13 +150,12 @@ export default function App() {
       <nav className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => setDarkMode(!darkMode)}>
               <div className="bg-indigo-600 p-2 rounded-lg">
                 <Database className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">PromptMaster</h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Gemini 3 Pro Powered</p>
+                <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">Closia.ai prompts collection</h1>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -172,7 +171,7 @@ export default function App() {
               )}
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className="p-2 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors"
+                className="p-2 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors sm:hidden"
                 title="Toggle Dark Mode"
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -187,14 +186,10 @@ export default function App() {
 
         {/* Breadcrumbs / Header */}
         <div className="mb-6 flex items-center text-sm text-slate-500">
-          <button onClick={() => setView('list')} className={`hover:text-indigo-600 ${view === 'list' ? 'font-semibold text-slate-800' : ''}`}>
-            Library
-          </button>
           {view !== 'list' && (
-            <>
-              <span className="mx-2 text-slate-300 dark:text-slate-600">/</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{view === 'create' ? 'Create' : 'Edit'}</span>
-            </>
+            <button onClick={() => setView('list')} className="hover:text-indigo-600 flex items-center gap-1">
+              <span className="text-slate-400">&larr;</span> Back to List
+            </button>
           )}
         </div>
 
