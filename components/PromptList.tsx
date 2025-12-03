@@ -132,8 +132,8 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
                   </button>
                 </th>
                 <th className="p-4">Prompt Name</th>
-                <th className="p-4 w-[80%]">Preview</th>
-                <th className="p-4">Tags</th>
+                <th className="p-4 w-[65%]">Preview</th>
+                <th className="p-4 w-[15%]">Tags</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
