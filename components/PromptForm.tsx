@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PromptData, PromptOption } from '../types';
 import { MultiSelect } from './MultiSelect';
-import { estimateTokens, calculateFlashCost, formatCost, generateId } from '../utils';
-import { Plus, Trash2, Save, X, Coins } from 'lucide-react';
+import { estimateTokens, calculateCost, formatCost, generateId, PRICING } from '../utils';
+import { Plus, Trash2, Save, X, Coins, Zap, Brain, Smartphone } from 'lucide-react';
 
 interface PromptFormProps {
   initialData?: PromptData;
@@ -38,7 +38,9 @@ export const PromptForm: React.FC<PromptFormProps> = ({
 
   // Stats
   const [tokenCount, setTokenCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
   const [cost, setCost] = useState(0);
+  const [selectedModel, setSelectedModel] = useState<keyof typeof PRICING>('gemini-flash');
 
   useEffect(() => {
     // Calculate total text content for token estimation
@@ -47,8 +49,9 @@ export const PromptForm: React.FC<PromptFormProps> = ({
     const fullText = `${content} ${optionsText} ${hint} ${nameUA} ${nameEN}`;
     const tokens = estimateTokens(fullText);
     setTokenCount(tokens);
-    setCost(calculateFlashCost(tokens));
-  }, [content, options, hint, nameUA, nameEN]);
+    setCharCount(fullText.length);
+    setCost(calculateCost(tokens, selectedModel));
+  }, [content, options, hint, nameUA, nameEN, selectedModel]);
 
   const validateNameEn = (value: string) => {
     if (!/^[a-z0-9_]*$/.test(value)) {
@@ -186,20 +189,52 @@ export const PromptForm: React.FC<PromptFormProps> = ({
           </div>
 
           {/* Token & Cost Calculator */}
-          <div className="flex flex-wrap items-center gap-4 mt-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm">
-            <div className="flex items-center gap-2">
-              <Coins className="w-4 h-4 text-amber-500" />
-              <span className="font-medium text-slate-700 dark:text-slate-300">Tokens: {tokenCount.toLocaleString()}</span>
+          <div className="flex flex-col gap-3 mt-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-md border border-slate-200 dark:border-slate-700 text-sm">
+
+            {/* Model Selection */}
+            <div className="flex gap-2 mb-1">
+              <button
+                type="button"
+                onClick={() => setSelectedModel('gemini-flash')}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium border transition-colors ${selectedModel === 'gemini-flash' ? 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600'}`}
+              >
+                <Zap className="w-3 h-3" /> Gemini Flash
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedModel('gemini-thinking')}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium border transition-colors ${selectedModel === 'gemini-thinking' ? 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600'}`}
+              >
+                <Brain className="w-3 h-3" /> Gemini Thinking
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedModel('gemini-nano')}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium border transition-colors ${selectedModel === 'gemini-nano' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600'}`}
+              >
+                <Smartphone className="w-3 h-3" /> Gemini Nano
+              </button>
             </div>
-            <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
-            <div className="flex items-center gap-2">
-              <span className="text-slate-500 dark:text-slate-400">Cost/Run:</span>
-              <span className="font-mono font-medium text-green-600 dark:text-green-400">{formatCost(cost)}</span>
-            </div>
-            <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
-            <div className="flex items-center gap-2">
-              <span className="text-slate-500 dark:text-slate-400">1k Runs:</span>
-              <span className="font-mono font-medium text-green-600 dark:text-green-400">{formatCost(cost * 1000)}</span>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Coins className="w-4 h-4 text-amber-500" />
+                <span className="font-medium text-slate-700 dark:text-slate-300">Tokens: {tokenCount.toLocaleString()}</span>
+              </div>
+              <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 dark:text-slate-400">Chars: {charCount.toLocaleString()}</span>
+              </div>
+              <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 dark:text-slate-400">Cost/Run:</span>
+                <span className="font-mono font-medium text-green-600 dark:text-green-400">{formatCost(cost)}</span>
+              </div>
+              <div className="w-px h-4 bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 dark:text-slate-400">1k Runs:</span>
+                <span className="font-mono font-medium text-green-600 dark:text-green-400">{formatCost(cost * 1000)}</span>
+              </div>
             </div>
           </div>
           {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content}</p>}

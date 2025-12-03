@@ -132,8 +132,8 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
                   </button>
                 </th>
                 <th className="p-4">Prompt Name</th>
-                <th className="p-4">Tags</th>
                 <th className="p-4 w-1/3">Preview</th>
+                <th className="p-4">Tags</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -163,20 +163,6 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
                       {prompt.hint && <div className="text-slate-500 dark:text-slate-400 text-xs mt-1 italic">{prompt.hint}</div>}
                     </td>
                     <td className="p-4 align-top">
-                      <div className="flex flex-wrap gap-1.5 max-w-[200px]">
-                        {prompt.dashboardBlocks.map(b => (
-                          <span key={b} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800/50">
-                            <LayoutTemplate className="w-3 h-3 mr-1" /> {b}
-                          </span>
-                        ))}
-                        {prompt.clients.map(c => (
-                          <span key={c} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-100 dark:border-green-800/50">
-                            <Smartphone className="w-3 h-3 mr-1" /> {c}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="p-4 align-top">
                       <p className="text-slate-600 dark:text-slate-300 line-clamp-2" title={prompt.content}>
                         {prompt.content}
                       </p>
@@ -190,6 +176,20 @@ export const PromptList: React.FC<PromptListProps> = ({ prompts, onEdit, onDelet
                           {prompt.options.length > 3 && <span className="text-[10px] text-slate-400">+{prompt.options.length - 3}</span>}
                         </div>
                       )}
+                    </td>
+                    <td className="p-4 align-top">
+                      <div className="flex flex-wrap gap-1.5 max-w-[200px]">
+                        {prompt.dashboardBlocks.map(b => (
+                          <span key={b} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800/50">
+                            <LayoutTemplate className="w-3 h-3 mr-1" /> {b}
+                          </span>
+                        ))}
+                        {prompt.clients.map(c => (
+                          <span key={c} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-100 dark:border-green-800/50">
+                            <Smartphone className="w-3 h-3 mr-1" /> {c}
+                          </span>
+                        ))}
+                      </div>
                     </td>
                     <td className="p-4 text-right align-top">
                       <div className="flex justify-end gap-2">

@@ -7,14 +7,18 @@ export const estimateTokens = (text: string): number => {
   return Math.ceil(text.length / 4);
 };
 
-/**
- * Calculates the cost of tokens based on Gemini Flash pricing.
- * Pricing: ~$0.075 per 1 million input tokens.
- */
-export const calculateFlashCost = (tokens: number): number => {
-  const PRICE_PER_MILLION = 0.075;
-  return (tokens / 1_000_000) * PRICE_PER_MILLION;
+export const PRICING = {
+  'gemini-flash': 0.075, // per 1M tokens
+  'gemini-thinking': 0.50, // estimated, per 1M tokens
+  'gemini-nano': 0.00, // on-device, free
 };
+
+export const calculateCost = (tokens: number, model: keyof typeof PRICING = 'gemini-flash'): number => {
+  const pricePerMillion = PRICING[model];
+  return (tokens / 1_000_000) * pricePerMillion;
+};
+
+export const calculateFlashCost = (tokens: number) => calculateCost(tokens, 'gemini-flash');
 
 export const formatCost = (cost: number): string => {
   if (cost === 0) return '$0.00';
