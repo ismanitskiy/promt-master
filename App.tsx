@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from "@vercel/analytics/react";
 import { PromptData, DEFAULT_DASHBOARD_BLOCKS, DEFAULT_CLIENT_PLATFORMS } from './types';
 import { PromptList } from './components/PromptList';
 import { PromptForm } from './components/PromptForm';
@@ -42,7 +43,7 @@ export default function App() {
   const [prompts, setPrompts] = useState<PromptData[]>([]);
   const [availableBlocks, setAvailableBlocks] = useState<string[]>(DEFAULT_DASHBOARD_BLOCKS);
   const [availableClients, setAvailableClients] = useState<string[]>(DEFAULT_CLIENT_PLATFORMS);
-  
+
   const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
   const [editingPrompt, setEditingPrompt] = useState<PromptData | undefined>(undefined);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -71,12 +72,12 @@ export default function App() {
     // Load Configs
     const savedBlocks = localStorage.getItem(STORAGE_BLOCKS_KEY);
     if (savedBlocks) {
-      try { setAvailableBlocks(JSON.parse(savedBlocks)); } catch(e) {}
+      try { setAvailableBlocks(JSON.parse(savedBlocks)); } catch (e) { }
     }
 
     const savedClients = localStorage.getItem(STORAGE_CLIENTS_KEY);
     if (savedClients) {
-      try { setAvailableClients(JSON.parse(savedClients)); } catch(e) {}
+      try { setAvailableClients(JSON.parse(savedClients)); } catch (e) { }
     }
 
     setIsLoaded(true);
@@ -158,7 +159,7 @@ export default function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         {/* Breadcrumbs / Header */}
         <div className="mb-6 flex items-center text-sm text-slate-500">
           <button onClick={() => setView('list')} className={`hover:text-indigo-600 ${view === 'list' ? 'font-semibold text-slate-800' : ''}`}>
@@ -174,20 +175,20 @@ export default function App() {
 
         {view === 'list' ? (
           <div className="animate-fade-in">
-            <PromptList 
-              prompts={prompts} 
-              onEdit={handleEdit} 
-              onDelete={handleDelete} 
+            <PromptList
+              prompts={prompts}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         ) : (
           <div className="max-w-4xl mx-auto">
-            <PromptForm 
-              initialData={editingPrompt} 
+            <PromptForm
+              initialData={editingPrompt}
               availableDashboardBlocks={availableBlocks}
               availableClients={availableClients}
-              onSave={handleSavePrompt} 
-              onCancel={() => setView('list')} 
+              onSave={handleSavePrompt}
+              onCancel={() => setView('list')}
               onManageBlocks={() => setManagerModal({ isOpen: true, type: 'blocks' })}
               onManageClients={() => setManagerModal({ isOpen: true, type: 'clients' })}
             />
@@ -195,13 +196,14 @@ export default function App() {
         )}
       </main>
 
-      <ListManagerModal 
+      <ListManagerModal
         isOpen={managerModal.isOpen}
         onClose={() => setManagerModal(prev => ({ ...prev, isOpen: false }))}
         title={managerModal.type === 'blocks' ? 'Manage Dashboard Blocks' : 'Manage Client Platforms'}
         items={managerModal.type === 'blocks' ? availableBlocks : availableClients}
         onSave={handleListSave}
       />
+      <Analytics />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PromptData, PromptOption } from '../types';
 import { MultiSelect } from './MultiSelect';
-import { estimateTokens, calculateFlashCost, formatCost } from '../utils';
+import { estimateTokens, calculateFlashCost, formatCost, generateId } from '../utils';
 import { Plus, Trash2, Save, X, Coins } from 'lucide-react';
 
 interface PromptFormProps {
@@ -76,22 +76,27 @@ export const PromptForm: React.FC<PromptFormProps> = ({
       return;
     }
 
-    const newPrompt: PromptData = {
-      id: initialData?.id || crypto.randomUUID(),
-      nameUA,
-      nameEN,
-      content,
-      hint,
-      dashboardBlocks,
-      clients,
-      options,
-      createdAt: initialData?.createdAt || Date.now()
-    };
-    onSave(newPrompt);
+    try {
+      const newPrompt: PromptData = {
+        id: initialData?.id || generateId(),
+        nameUA,
+        nameEN,
+        content,
+        hint,
+        dashboardBlocks,
+        clients,
+        options,
+        createdAt: initialData?.createdAt || Date.now()
+      };
+      onSave(newPrompt);
+    } catch (e) {
+      console.error("Failed to save prompt:", e);
+      alert("Failed to save prompt. Please check console for details.");
+    }
   };
 
   const addOption = () => {
-    setOptions([...options, { id: crypto.randomUUID(), label: '', value: '' }]);
+    setOptions([...options, { id: generateId(), label: '', value: '' }]);
   };
 
   const updateOption = (id: string, field: 'label' | 'value', value: string) => {
